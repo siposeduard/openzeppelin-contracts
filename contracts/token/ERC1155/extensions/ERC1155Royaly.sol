@@ -50,8 +50,15 @@ abstract contract ERC1155Royalty is ERC2981, ERC1155 {
      * - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
      * acceptance magic value.
      */
-    function _mintBatchWithRoyalties(address receiver, address to, uint256[] memory ids, uint256[] memory values, uint96[] memory royalties, bytes memory data) internal {
-        if(ids.length != royalties.length) {
+    function _mintBatchWithRoyalties(
+        address receiver,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory values,
+        uint96[] memory royalties,
+        bytes memory data
+    ) internal {
+        if (ids.length != royalties.length) {
             revert ERC1155InvalidArrayLength(ids.length, royalties.length);
         }
 
