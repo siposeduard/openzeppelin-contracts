@@ -62,31 +62,65 @@ describe('ERC1155Royalty', function () {
 
   describe('_mintBatchWithRoyalties', function () {
     it('revert if royalties lenght not math', async function () {
-        await expect(this.token.$_mintBatchWithRoyalties(this.recipient, this.account1, tokenBatchIds, mintValues, royaltyValues.slice(1), data))
+      await expect(
+        this.token.$_mintBatchWithRoyalties(
+          this.recipient,
+          this.account1,
+          tokenBatchIds,
+          mintValues,
+          royaltyValues.slice(1),
+          data,
+        ),
+      )
         .to.be.revertedWithCustomError(this.token, 'ERC1155InvalidArrayLength')
-          .withArgs(tokenBatchIds.length, royaltyValues.length - 1);
+        .withArgs(tokenBatchIds.length, royaltyValues.length - 1);
     });
 
     it('emits a TransferBatch event', async function () {
-        await expect(this.token.$_mintBatchWithRoyalties(this.recipient, this.account1, tokenBatchIds, mintValues, royaltyValues, data))
+      await expect(
+        this.token.$_mintBatchWithRoyalties(
+          this.recipient,
+          this.account1,
+          tokenBatchIds,
+          mintValues,
+          royaltyValues,
+          data,
+        ),
+      )
         .to.emit(this.token, 'TransferBatch')
-          .withArgs(this.account1, ethers.ZeroAddress, this.account1, tokenBatchIds, mintValues);
+        .withArgs(this.account1, ethers.ZeroAddress, this.account1, tokenBatchIds, mintValues);
     });
 
     it('emits a TransferBatchWithRoyaltiesSet event', async function () {
-        await expect(this.token.$_mintBatchWithRoyalties(this.recipient, this.account1, tokenBatchIds, mintValues, royaltyValues, data))
+      await expect(
+        this.token.$_mintBatchWithRoyalties(
+          this.recipient,
+          this.account1,
+          tokenBatchIds,
+          mintValues,
+          royaltyValues,
+          data,
+        ),
+      )
         .to.emit(this.token, 'TransferBatchWithRoyaltiesSet')
-          .withArgs(this.account1, ethers.ZeroAddress, this.account1, tokenBatchIds, mintValues, royaltyValues);
+        .withArgs(this.account1, ethers.ZeroAddress, this.account1, tokenBatchIds, mintValues, royaltyValues);
     });
 
     it('royalty information are set after mintBatchWithRoyalties for each token individually', async function () {
-        await this.token.$_mintBatchWithRoyalties(this.recipient, this.account1, tokenBatchIds, mintValues, royaltyValues, data);
-        for (let index = 0; index < tokenBatchIds.length; index++) {
-            expect(await this.token.royaltyInfo(tokenBatchIds[index], salePrice)).to.deep.equal([
-                this.recipient.address,
-                (salePrice * royaltyValues[index]) / 10000n,
-            ]);
-        }
+      await this.token.$_mintBatchWithRoyalties(
+        this.recipient,
+        this.account1,
+        tokenBatchIds,
+        mintValues,
+        royaltyValues,
+        data,
+      );
+      for (let index = 0; index < tokenBatchIds.length; index++) {
+        expect(await this.token.royaltyInfo(tokenBatchIds[index], salePrice)).to.deep.equal([
+          this.recipient.address,
+          (salePrice * royaltyValues[index]) / 10000n,
+        ]);
+      }
     });
   });
 
